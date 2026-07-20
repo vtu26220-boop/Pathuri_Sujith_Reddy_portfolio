@@ -10,11 +10,9 @@ import PortfolioProvider from "./context/PortfolioContext";
 import "./styles/globals.css";
 import "./styles/admin.css";
 
-createRoot(
-  document.getElementById("root")
-).render(
+createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/Pathuri_Sujith_Reddy_portfolio">
       <AuthProvider>
         <PortfolioProvider>
           <App />
