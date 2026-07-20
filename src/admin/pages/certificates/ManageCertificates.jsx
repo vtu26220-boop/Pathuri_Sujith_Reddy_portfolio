@@ -23,25 +23,20 @@ function ManageCertificates() {
   const certificates =
     portfolioData?.certificates || [];
 
+  // Add a new certificate using a public link
   const addCertificate = (certificate) => {
-    let pdfUrl = "";
-
-    if (certificate.pdfFile) {
-      pdfUrl = URL.createObjectURL(
-        certificate.pdfFile
-      );
-    }
-
     const newCertificate = {
       id: Date.now(),
 
       title: certificate.title,
+
       issuer: certificate.issuer,
 
       issuedDate:
-        certificate.issuedDate || "",
+        certificate.date || "",
 
-      pdfUrl,
+      link:
+        certificate.link || "",
     };
 
     setCertificates([
@@ -50,8 +45,13 @@ function ManageCertificates() {
     ]);
 
     setShowForm(false);
+
+    alert(
+      "Certificate added successfully!"
+    );
   };
 
+  // Delete certificate
   const deleteCertificate = (id) => {
     const confirmed = window.confirm(
       "Are you sure you want to delete this certificate?"
@@ -74,15 +74,16 @@ function ManageCertificates() {
 
   return (
     <section>
+
       <div className="admin-page-header admin-header-row">
+
         <div>
           <h1>
             Manage Certificates
           </h1>
 
           <p>
-            Add and manage your
-            certificates.
+            Add and manage your certificates.
           </p>
         </div>
 
@@ -105,22 +106,30 @@ function ManageCertificates() {
             ? "Cancel"
             : "Add Certificate"}
         </button>
+
       </div>
 
+      {/* Add Certificate Form */}
       {showForm && (
         <div className="admin-bottom-space">
+
           <CertificateForm
             onSubmit={addCertificate}
             onCancel={() =>
               setShowForm(false)
             }
           />
+
         </div>
       )}
 
+      {/* Certificate List */}
       <div className="admin-certificate-grid">
+
         {certificates.length === 0 ? (
+
           <div className="admin-empty-state">
+
             <FiFileText />
 
             <h3>
@@ -131,14 +140,19 @@ function ManageCertificates() {
               Click Add Certificate to add
               your first certificate.
             </p>
+
           </div>
+
         ) : (
+
           certificates.map(
             (certificate) => (
+
               <article
                 className="admin-certificate-card"
                 key={certificate.id}
               >
+
                 <div className="admin-certificate-icon">
                   <FiFileText />
                 </div>
@@ -154,27 +168,27 @@ function ManageCertificates() {
                 {certificate.issuedDate && (
                   <span>
                     Issued:{" "}
-                    {
-                      certificate.issuedDate
-                    }
+                    {certificate.issuedDate}
                   </span>
                 )}
 
                 <div className="admin-card-actions">
-                  {certificate.pdfUrl && (
+
+                  {/* Open Certificate Link */}
+                  {certificate.link && (
                     <a
-                      href={
-                        certificate.pdfUrl
-                      }
+                      href={certificate.link}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noopener noreferrer"
                       className="admin-edit-button"
                     >
                       <FiExternalLink />
-                      View PDF
+
+                      View Certificate
                     </a>
                   )}
 
+                  {/* Delete Certificate */}
                   <button
                     type="button"
                     className="admin-delete-button"
@@ -185,14 +199,21 @@ function ManageCertificates() {
                     }
                   >
                     <FiTrash2 />
+
                     Delete
                   </button>
+
                 </div>
+
               </article>
+
             )
           )
+
         )}
+
       </div>
+
     </section>
   );
 }

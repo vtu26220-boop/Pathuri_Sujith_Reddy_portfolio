@@ -1,7 +1,8 @@
 import { useState } from "react";
+
 import {
   FiPlus,
-  FiUpload,
+  FiLink,
   FiX,
 } from "react-icons/fi";
 
@@ -13,7 +14,7 @@ function CertificateForm({
     title: "",
     issuer: "",
     date: "",
-    pdfFile: null,
+    link: "",
   });
 
   const handleChange = (event) => {
@@ -25,56 +26,49 @@ function CertificateForm({
     }));
   };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files?.[0];
-
-    if (!file) {
-      return;
-    }
-
-    if (file.type !== "application/pdf") {
-      alert("Please select a PDF file only.");
-
-      event.target.value = "";
-
-      return;
-    }
-
-    setFormData((previous) => ({
-      ...previous,
-      pdfFile: file,
-    }));
-  };
-
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (
-      !formData.title.trim() ||
-      !formData.issuer.trim()
-    ) {
+    const title = formData.title.trim();
+    const issuer = formData.issuer.trim();
+    const date = formData.date.trim();
+    const link = formData.link.trim();
+
+    if (!title || !issuer) {
       alert(
         "Please enter certificate name and issuer."
       );
+      return;
+    }
 
+    if (!link) {
+      alert(
+        "Please enter the certificate link."
+      );
+      return;
+    }
+
+    try {
+      new URL(link);
+    } catch {
+      alert(
+        "Please enter a valid certificate link."
+      );
       return;
     }
 
     onSubmit({
-      ...formData,
-
-      title: formData.title.trim(),
-
-      issuer: formData.issuer.trim(),
-
-      date: formData.date.trim(),
+      title,
+      issuer,
+      date,
+      link,
     });
 
     setFormData({
       title: "",
       issuer: "",
       date: "",
-      pdfFile: null,
+      link: "",
     });
   };
 
@@ -83,10 +77,13 @@ function CertificateForm({
       className="admin-panel admin-form"
       onSubmit={handleSubmit}
     >
-      <h2>Add New Certificate</h2>
+      <h2>
+        Add New Certificate
+      </h2>
 
       <div className="admin-form-grid">
 
+        {/* Certificate Name */}
         <div className="admin-form-group">
           <label htmlFor="certificateTitle">
             Certificate Name
@@ -103,6 +100,7 @@ function CertificateForm({
           />
         </div>
 
+        {/* Issuer */}
         <div className="admin-form-group">
           <label htmlFor="certificateIssuer">
             Issuer
@@ -119,6 +117,7 @@ function CertificateForm({
           />
         </div>
 
+        {/* Issued Date */}
         <div className="admin-form-group">
           <label htmlFor="certificateDate">
             Issued Date
@@ -134,33 +133,36 @@ function CertificateForm({
           />
         </div>
 
+        {/* Certificate Link */}
         <div className="admin-form-group">
-          <label htmlFor="certificatePdf">
-            Certificate PDF
+          <label htmlFor="certificateLink">
+            Certificate Link
           </label>
 
-          <div className="admin-file-upload">
-            <FiUpload />
+          <div className="admin-input-wrapper">
+            <FiLink />
 
             <input
-              id="certificatePdf"
-              type="file"
-              accept="application/pdf,.pdf"
-              onChange={handleFileChange}
+              id="certificateLink"
+              type="url"
+              name="link"
+              value={formData.link}
+              onChange={handleChange}
+              placeholder="https://drive.google.com/..."
+              required
             />
           </div>
 
-          {formData.pdfFile && (
-            <p className="admin-muted">
-              Selected: {formData.pdfFile.name}
-            </p>
-          )}
+          <p className="admin-muted">
+            Paste a public Google Drive or certificate URL.
+          </p>
         </div>
 
       </div>
 
       <div className="admin-card-actions">
 
+        {/* Add Certificate */}
         <button
           type="submit"
           className="admin-button"
@@ -169,6 +171,7 @@ function CertificateForm({
           Add Certificate
         </button>
 
+        {/* Cancel */}
         {onCancel && (
           <button
             type="button"

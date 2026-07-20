@@ -1193,3 +1193,20 @@ button {
   background: #22d3ee !important;
   color: #020617 !important;
 }
+
+.scroll-explore {
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 18px;
+  white-space: nowrap;
+}
