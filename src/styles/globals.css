@@ -1169,3 +1169,52 @@ button {
 .navbar .logo span {
   color: #22d3ee;
 }
+
+/* FINAL NAVBAR BUTTON FIX */
+
+.navbar button.logo {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent !important;
+  border: none !important;
+  outline: none;
+  color: #ffffff !important;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.navbar button.logo span {
+  color: #22d3ee !important;
+}
+
+.nav-links button {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent !important;
+  border: none !important;
+  outline: none;
+  color: #cbd5e1 !important;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nav-links button:hover {
+  color: #22d3ee !important;
+}
+
+.nav-links button.hire-btn {
+  background: transparent !important;
+  border: 1px solid #22d3ee !important;
+  color: #22d3ee !important;
+  padding: 14px 26px;
+  border-radius: 12px;
+}
+
+.nav-links button.hire-btn:hover {
+  background: #22d3ee !important;
+  color: #020617 !important;
+}
