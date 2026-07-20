@@ -1123,3 +1123,32 @@ button {
     gap: 10px;
   }
 }
+
+.nav-links button {
+  background: transparent;
+  border: none;
+  color: #cbd5e1;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.3s ease;
+}
+
+.nav-links button:hover {
+  color: #22d3ee;
+}
+
+/* Keep Hire Me button design */
+.nav-links .hire-btn {
+  padding: 14px 26px;
+  border: 1px solid #22d3ee;
+  border-radius: 12px;
+  color: #22d3ee;
+  background: transparent;
+}
+
+.nav-links .hire-btn:hover {
+  background: #22d3ee;
+  color: #020617;
+}
