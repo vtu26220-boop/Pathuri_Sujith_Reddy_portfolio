@@ -1158,3 +1158,14 @@ button {
   border: none;
   cursor: pointer;
 }
+
+.navbar .logo {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.navbar .logo span {
+  color: #22d3ee;
+}
