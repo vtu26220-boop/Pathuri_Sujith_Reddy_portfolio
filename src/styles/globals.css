@@ -1152,3 +1152,9 @@ button {
   background: #22d3ee;
   color: #020617;
 }
+
+.navbar .logo {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
