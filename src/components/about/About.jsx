@@ -30,18 +30,12 @@ function About() {
         <div className="about-layout">
 
           <div className="about-image-wrapper">
-            <img
-              src={
-                profile.profileImage ||
-                "/images/profile/sujith-profile.png"
-              }
-              alt={
-                profile.name ||
-                "Pathuri Sujith Reddy"
-              }
-              className="about-image"
-            />
-          </div>
+  <img
+    src="https://vtu26220-boop.github.io/Pathuri_Sujith_Reddy_portfolio/images/profile/sujith-profile.png"
+    alt="Pathuri Sujith Reddy"
+    className="about-image"
+  />
+</div>
 
           <div className="about-content">
 
