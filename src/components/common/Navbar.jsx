@@ -6,28 +6,35 @@ import usePortfolio from "../../hooks/usePortfolio";
 function Navbar() {
   const { portfolioData } = usePortfolio();
 
-  const [menuOpen, setMenuOpen] =
-    useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const profile =
-    portfolioData?.profile || {};
+  const profile = portfolioData?.profile || {};
 
-  const closeMenu = () => {
+  const scrollToSection = (sectionId) => {
     setMenuOpen(false);
+
+    const section = document.getElementById(sectionId);
+
+    if (section) {
+      section.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
   };
 
   return (
     <header className="navbar">
       <div className="navbar-container">
 
-        <a
-          href="#home"
+        <button
+          type="button"
           className="logo"
-          onClick={closeMenu}
+          onClick={() => scrollToSection("home")}
         >
           {profile.shortName || "Sujith"}
           <span>.</span>
-        </a>
+        </button>
 
         <nav
           className={
@@ -36,64 +43,62 @@ function Navbar() {
               : "nav-links"
           }
         >
-          <a
-            href="#about"
-            onClick={closeMenu}
+          <button
+            type="button"
+            onClick={() => scrollToSection("about")}
           >
             About
-          </a>
+          </button>
 
-          <a
-            href="#education"
-            onClick={closeMenu}
+          <button
+            type="button"
+            onClick={() => scrollToSection("education")}
           >
             Education
-          </a>
+          </button>
 
-          <a
-            href="#skills"
-            onClick={closeMenu}
+          <button
+            type="button"
+            onClick={() => scrollToSection("skills")}
           >
             Skills
-          </a>
+          </button>
 
-          <a
-            href="#projects"
-            onClick={closeMenu}
+          <button
+            type="button"
+            onClick={() => scrollToSection("projects")}
           >
             Projects
-          </a>
+          </button>
 
-          <a
-            href="#certificates"
-            onClick={closeMenu}
+          <button
+            type="button"
+            onClick={() => scrollToSection("certificates")}
           >
             Certificates
-          </a>
+          </button>
 
-          <a
-            href="#contact"
-            onClick={closeMenu}
+          <button
+            type="button"
+            onClick={() => scrollToSection("contact")}
           >
             Contact
-          </a>
+          </button>
 
-          <a
-            href="#contact"
+          <button
+            type="button"
             className="hire-btn"
-            onClick={closeMenu}
+            onClick={() => scrollToSection("contact")}
           >
             Hire Me
-          </a>
+          </button>
         </nav>
 
         <button
           type="button"
           className="menu-button"
           onClick={() =>
-            setMenuOpen(
-              (previous) => !previous
-            )
+            setMenuOpen((previous) => !previous)
           }
           aria-label={
             menuOpen
