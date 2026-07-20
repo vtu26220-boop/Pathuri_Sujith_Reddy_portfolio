@@ -29,7 +29,25 @@ function Hero() {
     "Sujith Reddy";
 
   const emailAddress =
+    profile.email ||
     "pathurisujithreddy2005@gmail.com";
+
+  // Correct resume URL for GitHub Pages
+  const resumeUrl =
+    `${import.meta.env.BASE_URL}resume/sujith-reddy-resume.pdf`;
+
+  // Scroll to portfolio sections without changing HashRouter route
+  const scrollToSection = (sectionId) => {
+    const section =
+      document.getElementById(sectionId);
+
+    if (section) {
+      section.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
 
   return (
     <section
@@ -63,36 +81,42 @@ function Hero() {
 
         <div className="hero-buttons">
 
-          <a
-            href="#projects"
+          {/* View Projects */}
+          <button
+            type="button"
             className="btn btn-primary"
+            onClick={() =>
+              scrollToSection("projects")
+            }
           >
             View Projects
+          </button>
+
+          {/* View Resume */}
+          <a
+            href={resumeUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="btn btn-secondary"
+          >
+            View Resume
           </a>
 
-          {profile.resume && (
-            <a
-              href={profile.resume}
-              target="_blank"
-              rel="noreferrer"
-              className="btn btn-secondary"
-            >
-              View Resume
-            </a>
-          )}
-
-          <a
-            href="#contact"
+          {/* Contact Me */}
+          <button
+            type="button"
             className="btn btn-outline"
+            onClick={() =>
+              scrollToSection("contact")
+            }
           >
             Contact Me
-          </a>
+          </button>
 
         </div>
 
         <div className="hero-socials">
 
-          {/* GitHub */}
           {profile.github && (
             <a
               href={profile.github}
@@ -105,7 +129,6 @@ function Hero() {
             </a>
           )}
 
-          {/* LinkedIn */}
           {profile.linkedin && (
             <a
               href={profile.linkedin}
@@ -118,7 +141,6 @@ function Hero() {
             </a>
           )}
 
-          {/* LeetCode */}
           {profile.leetcode && (
             <a
               href={profile.leetcode}
@@ -131,7 +153,6 @@ function Hero() {
             </a>
           )}
 
-          {/* HackerRank */}
           {profile.hackerrank && (
             <a
               href={profile.hackerrank}
@@ -144,7 +165,6 @@ function Hero() {
             </a>
           )}
 
-          {/* Email */}
           <a
             href={`mailto:${emailAddress}`}
             aria-label="Send Email"
@@ -155,13 +175,17 @@ function Hero() {
 
         </div>
 
-        <a
-          href="#about"
+        {/* Scroll to About */}
+        <button
+          type="button"
           className="scroll-explore"
+          onClick={() =>
+            scrollToSection("about")
+          }
         >
           Scroll to explore
           <FiArrowDown />
-        </a>
+        </button>
 
       </div>
     </section>

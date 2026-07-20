@@ -1170,3 +1170,26 @@ button {
   color: #22d3ee;
 }
 
+.hero-buttons button,
+.scroll-explore {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.scroll-explore {
+  background: transparent;
+  border: none;
+  color: inherit;
+}
+.hero-buttons button.btn-outline {
+  background: transparent !important;
+  color: #22d3ee !important;
+  border: 1px solid #22d3ee !important;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.hero-buttons button.btn-outline:hover {
+  background: #22d3ee !important;
+  color: #020617 !important;
+}
