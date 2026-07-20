@@ -8,20 +8,18 @@ export const initialPortfolioData = {
     description:
       "I build responsive, practical, and user-focused web applications using modern frontend and backend technologies.",
 
-    profileImage:
-      "/images/profile/sujith-profile.png",
+    // Correct path for GitHub Pages
+    profileImage: `${import.meta.env.BASE_URL}images/profile/sujith-profile.png`,
 
-    resume:
-      "/resume/sujith-reddy-resume.pdf",
+    // Correct path for View Resume and Download Resume
+    resume: `${import.meta.env.BASE_URL}resume/sujith-reddy-resume.pdf`,
 
     email: "pathurirajitha2@gmail.com",
     phone: "+91 9347386302",
 
-    location:
-      "Siddipet, Telangana, India",
+    location: "Siddipet, Telangana, India",
 
-    github:
-      "https://github.com/vtu26220-boop",
+    github: "https://github.com/vtu26220-boop",
 
     linkedin:
       "https://www.linkedin.com/in/pathuri-sujith-reddy-30a634285/",
@@ -30,10 +28,8 @@ export const initialPortfolioData = {
   education: [
     {
       id: 1,
-      title:
-        "Bachelor of Engineering - Computer Science",
-      subtitle:
-        "Computer Science Engineering",
+      title: "Bachelor of Engineering - Computer Science",
+      subtitle: "Computer Science Engineering",
       institution: "Vel Tech University",
       location: "Chennai, Tamil Nadu",
       year: "2023 - 2027",
@@ -45,8 +41,7 @@ export const initialPortfolioData = {
       id: 2,
       title: "Intermediate",
       subtitle: "MPC",
-      institution:
-        "Gurukrupa Junior College",
+      institution: "Gurukrupa Junior College",
       location: "Siddipet, Telangana",
       year: "2022 - 2023",
       scoreLabel: "Score",
@@ -133,8 +128,7 @@ export const initialPortfolioData = {
     {
       id: 1,
 
-      title:
-        "Driverless Seed Sowing Machine Using IoT",
+      title: "Driverless Seed Sowing Machine Using IoT",
 
       description:
         "An IoT-enabled autonomous seed-sowing system designed to automate seed dispensing and farm navigation.",
@@ -153,8 +147,7 @@ export const initialPortfolioData = {
     {
       id: 2,
 
-      title:
-        "Recyclable Solid Waste Detection",
+      title: "Recyclable Solid Waste Detection",
 
       description:
         "A deep learning-based system designed to identify recyclable and non-recyclable solid waste.",
