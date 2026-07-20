@@ -11,9 +11,8 @@ function Resume() {
 
   const profile = portfolioData?.profile || {};
 
-  const resumeUrl =
-    profile.resume ||
-    "/resume/sujith-reddy-resume.pdf";
+  // Correct URL for local development and GitHub Pages
+  const resumeUrl = `${import.meta.env.BASE_URL}resume/sujith-reddy-resume.pdf`;
 
   return (
     <section
@@ -41,28 +40,24 @@ function Resume() {
 
           <div className="resume-buttons">
 
-            {resumeUrl && (
-              <>
-                <a
-                  href={resumeUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="btn btn-primary"
-                >
-                  <FiEye />
-                  View Resume
-                </a>
+            <a
+              href={resumeUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-primary"
+            >
+              <FiEye />
+              View Resume
+            </a>
 
-                <a
-                  href={resumeUrl}
-                  download
-                  className="btn btn-outline"
-                >
-                  <FiDownload />
-                  Download Resume
-                </a>
-              </>
-            )}
+            <a
+              href={resumeUrl}
+              download="Pathuri-Sujith-Reddy-Resume.pdf"
+              className="btn btn-outline"
+            >
+              <FiDownload />
+              Download Resume
+            </a>
 
           </div>
 
@@ -81,27 +76,17 @@ function Resume() {
             </p>
 
             <h3>
-              {profile.name ||
-                "Pathuri Sujith Reddy"}
+              {profile.name || "Pathuri Sujith Reddy"}
             </h3>
 
             <p>
-              {profile.title ||
-                "Computer Science Student"}
+              {profile.title || "Computer Science Student"}
             </p>
 
             <ul>
-              <li>
-                ✓ Education and academic details
-              </li>
-
-              <li>
-                ✓ Technical skills and projects
-              </li>
-
-              <li>
-                ✓ Contact details and professional links
-              </li>
+              <li>✓ Education and academic details</li>
+              <li>✓ Technical skills and projects</li>
+              <li>✓ Contact details and professional links</li>
             </ul>
 
           </div>
