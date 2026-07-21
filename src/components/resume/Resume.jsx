@@ -9,10 +9,12 @@ import usePortfolio from "../../hooks/usePortfolio";
 function Resume() {
   const { portfolioData } = usePortfolio();
 
-  const profile = portfolioData?.profile || {};
+  const profile =
+    portfolioData?.profile || {};
 
-  // Correct URL for local development and GitHub Pages
-  const resumeUrl = `${import.meta.env.BASE_URL}resume/sujith-reddy-resume.pdf`;
+  // Resume link updated from Admin Dashboard
+  const resumeUrl =
+    profile.resume || "";
 
   return (
     <section
@@ -40,24 +42,35 @@ function Resume() {
 
           <div className="resume-buttons">
 
-            <a
-              href={resumeUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="btn btn-primary"
-            >
-              <FiEye />
-              View Resume
-            </a>
+            {resumeUrl ? (
+              <>
+                {/* View Resume */}
+                <a
+                  href={resumeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-primary"
+                >
+                  <FiEye />
+                  View Resume
+                </a>
 
-            <a
-              href={resumeUrl}
-              download="Pathuri-Sujith-Reddy-Resume.pdf"
-              className="btn btn-outline"
-            >
-              <FiDownload />
-              Download Resume
-            </a>
+                {/* Download / Open Resume */}
+                <a
+                  href={resumeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-outline"
+                >
+                  <FiDownload />
+                  Download Resume
+                </a>
+              </>
+            ) : (
+              <p>
+                Resume is currently unavailable.
+              </p>
+            )}
 
           </div>
 
@@ -76,17 +89,27 @@ function Resume() {
             </p>
 
             <h3>
-              {profile.name || "Pathuri Sujith Reddy"}
+              {profile.name ||
+                "Pathuri Sujith Reddy"}
             </h3>
 
             <p>
-              {profile.title || "Computer Science Student"}
+              {profile.title ||
+                "Computer Science Student"}
             </p>
 
             <ul>
-              <li>✓ Education and academic details</li>
-              <li>✓ Technical skills and projects</li>
-              <li>✓ Contact details and professional links</li>
+              <li>
+                ✓ Education and academic details
+              </li>
+
+              <li>
+                ✓ Technical skills and projects
+              </li>
+
+              <li>
+                ✓ Contact details and professional links
+              </li>
             </ul>
 
           </div>
