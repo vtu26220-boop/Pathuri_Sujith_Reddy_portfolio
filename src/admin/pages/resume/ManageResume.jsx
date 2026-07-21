@@ -1,10 +1,11 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 import {
   FiFileText,
   FiExternalLink,
-  FiUpload,
+  FiLink,
   FiTrash2,
+  FiSave,
 } from "react-icons/fi";
 
 import usePortfolio from "../../../hooks/usePortfolio";
@@ -15,92 +16,48 @@ function ManageResume() {
     updateProfile,
   } = usePortfolio();
 
-  const fileInputRef = useRef(null);
+  const currentResume =
+    portfolioData?.profile?.resume || "";
 
-  const [selectedFile, setSelectedFile] =
-    useState(null);
+  const [resumeLink, setResumeLink] =
+    useState(currentResume);
 
   const [message, setMessage] =
     useState("");
 
-  const currentResume =
-    portfolioData?.profile?.resume || "";
-
-  const handleFileChange = (event) => {
-    const file =
-      event.target.files?.[0];
-
-    if (!file) {
-      return;
-    }
-
-    if (
-      file.type !==
-      "application/pdf"
-    ) {
-      setMessage(
-        "Please select a PDF file only."
-      );
-
-      event.target.value = "";
-
-      return;
-    }
-
-    setSelectedFile(file);
-
-    setMessage("");
-  };
-
-  const handleUpdateResume = (
-    event
-  ) => {
+  // Update resume link
+  const handleUpdateResume = (event) => {
     event.preventDefault();
 
-    if (!selectedFile) {
-      setMessage(
-        "Please select a resume PDF first."
-      );
+    const link = resumeLink.trim();
 
+    if (!link) {
+      setMessage(
+        "Please enter your resume link."
+      );
       return;
     }
 
-    /*
-      This creates a temporary browser URL
-      for the selected PDF.
-
-      Important:
-      This works for previewing the resume
-      during the current browser session.
-
-      For permanent resume uploads,
-      Firebase Storage or a backend
-      will be required later.
-    */
-
-    const resumeUrl =
-      URL.createObjectURL(
-        selectedFile
+    // Check whether the entered link is valid
+    try {
+      new URL(link);
+    } catch {
+      setMessage(
+        "Please enter a valid resume link."
       );
+      return;
+    }
 
     updateProfile({
-      resume: resumeUrl,
-      resumeName:
-        selectedFile.name,
+      resume: link,
     });
 
     setMessage(
-      "Resume updated successfully."
+      "Resume link updated successfully."
     );
-
-    setSelectedFile(null);
-
-    if (fileInputRef.current) {
-      fileInputRef.current.value =
-        "";
-    }
   };
 
+  // Delete resume link
   const handleDeleteResume = () => {
     if (!currentResume) {
       return;
@@ -108,7 +65,7 @@ function ManageResume() {
 
     const confirmed =
       window.confirm(
-        "Are you sure you want to delete the current resume?"
+        "Are you sure you want to remove the current resume link?"
       );
 
     if (!confirmed) {
@@ -120,33 +77,31 @@ function ManageResume() {
       resumeName: "",
     });
 
-    setSelectedFile(null);
-
-    if (fileInputRef.current) {
-      fileInputRef.current.value =
-        "";
-    }
+    setResumeLink("");
 
     setMessage(
-      "Resume deleted successfully."
+      "Resume link removed successfully."
     );
   };
 
   return (
     <section>
+
+      {/* Page Header */}
       <div className="admin-page-header">
         <h1>
           Manage Resume
         </h1>
 
         <p>
-          Upload, update, and manage
-          the resume displayed on your
-          portfolio.
+          Add or update the resume link
+          displayed on your portfolio.
         </p>
       </div>
 
+      {/* Current Resume */}
       <div className="admin-panel">
+
         <div className="admin-resume-icon">
           <FiFileText />
         </div>
@@ -156,62 +111,64 @@ function ManageResume() {
         </h2>
 
         {currentResume ? (
-          <>
-            
+          <div className="admin-card-actions">
 
-            <div className="admin-card-actions">
-              <a
-                href={currentResume}
-                target="_blank"
-                rel="noreferrer"
-                className="admin-edit-button"
-              >
-                <FiExternalLink />
+            {/* View Current Resume */}
+            <a
+              href={currentResume}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="admin-edit-button"
+            >
+              <FiExternalLink />
 
-                View Current Resume
-              </a>
+              View Current Resume
+            </a>
 
-              <button
-                type="button"
-                className="admin-delete-button"
-                onClick={
-                  handleDeleteResume
-                }
-              >
-                <FiTrash2 />
+            {/* Delete Resume */}
+            <button
+              type="button"
+              className="admin-delete-button"
+              onClick={handleDeleteResume}
+            >
+              <FiTrash2 />
 
-                Delete Resume
-              </button>
-            </div>
-          </>
+              Remove Resume
+            </button>
+
+          </div>
         ) : (
           <div className="admin-empty-state">
+
             <FiFileText />
 
             <h3>
-              No resume uploaded
+              No resume link added
             </h3>
 
             <p>
-              Upload your resume using
+              Add your resume link using
               the form below.
             </p>
+
           </div>
         )}
+
       </div>
 
+      {/* Update Resume Link Form */}
       <form
         className="admin-panel admin-form admin-section-space"
-        onSubmit={
-          handleUpdateResume
-        }
+        onSubmit={handleUpdateResume}
       >
+
         <h2>
           {currentResume
-            ? "Update Resume"
-            : "Upload Resume"}
+            ? "Update Resume Link"
+            : "Add Resume Link"}
         </h2>
 
+        {/* Success / Error Message */}
         {message && (
           <div
             className={
@@ -226,42 +183,55 @@ function ManageResume() {
           </div>
         )}
 
+        {/* Resume Link Input */}
         <div className="admin-form-group">
-          <label
-            htmlFor="resumeFile"
-          >
-            Select Resume PDF
+
+          <label htmlFor="resumeLink">
+            Resume Link
           </label>
 
-          <input
-            ref={fileInputRef}
-            id="resumeFile"
-            type="file"
-            accept="application/pdf,.pdf"
-            onChange={
-              handleFileChange
-            }
-          />
+          <div className="admin-input-wrapper">
 
-          {selectedFile && (
-            <p className="selected-file-name">
-              Selected:{" "}
-              {selectedFile.name}
-            </p>
-          )}
+            <FiLink />
+
+            <input
+              id="resumeLink"
+              type="url"
+              value={resumeLink}
+              onChange={(event) => {
+                setResumeLink(
+                  event.target.value
+                );
+
+                setMessage("");
+              }}
+              placeholder="https://drive.google.com/..."
+              required
+            />
+
+          </div>
+
+          <p className="admin-muted">
+            Paste a public Google Drive or
+            other direct resume link.
+          </p>
+
         </div>
 
+        {/* Update Button */}
         <button
           type="submit"
           className="admin-button"
         >
-          <FiUpload />
+          <FiSave />
 
           {currentResume
-            ? "Update Resume"
-            : "Upload Resume"}
+            ? "Update Resume Link"
+            : "Add Resume Link"}
         </button>
+
       </form>
+
     </section>
   );
 }
