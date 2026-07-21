@@ -1,7 +1,6 @@
 import {
   createContext,
   useEffect,
-  useRef,
   useState,
 } from "react";
 
@@ -15,13 +14,21 @@ import {
 import { db } from "../firebase/firebase";
 import { initialPortfolioData } from "../data/initialData";
 
-export const PortfolioContext = createContext(null);
+export const PortfolioContext =
+  createContext(null);
 
-const STORAGE_KEY = "sujithPortfolioData";
+const STORAGE_KEY =
+  "sujithPortfolioData";
 
-const PORTFOLIO_COLLECTION = "portfolio";
-const PORTFOLIO_DOCUMENT = "main";
+const PORTFOLIO_COLLECTION =
+  "portfolio";
 
+const PORTFOLIO_DOCUMENT =
+  "main";
+
+/*
+ * Create default portfolio data
+ */
 function createDefaultData() {
   return {
     ...initialPortfolioData,
@@ -50,10 +57,63 @@ function createDefaultData() {
   };
 }
 
+/*
+ * Merge saved/Firebase data with defaults.
+ *
+ * This prevents missing fields from
+ * breaking the portfolio.
+ */
+function mergePortfolioData(data = {}) {
+  return {
+    ...createDefaultData(),
+    ...data,
+
+    profile: {
+      ...(initialPortfolioData.profile || {}),
+      ...(data.profile || {}),
+    },
+
+    projects:
+      data.projects ??
+      initialPortfolioData.projects ??
+      [],
+
+    education:
+      data.education ??
+      initialPortfolioData.education ??
+      [],
+
+    skills:
+      data.skills ??
+      initialPortfolioData.skills ??
+      {},
+
+    certificates:
+      data.certificates ??
+      initialPortfolioData.certificates ??
+      [],
+
+    certifications:
+      data.certifications ??
+      initialPortfolioData.certifications ??
+      [],
+
+    messages:
+      data.messages ??
+      initialPortfolioData.messages ??
+      [],
+  };
+}
+
+/*
+ * Read portfolio from localStorage
+ */
 function getLocalData() {
   try {
     const savedData =
-      localStorage.getItem(STORAGE_KEY);
+      localStorage.getItem(
+        STORAGE_KEY
+      );
 
     if (!savedData) {
       return createDefaultData();
@@ -62,45 +122,9 @@ function getLocalData() {
     const parsedData =
       JSON.parse(savedData);
 
-    return {
-      ...createDefaultData(),
-      ...parsedData,
-
-      profile: {
-        ...(initialPortfolioData.profile || {}),
-        ...(parsedData.profile || {}),
-      },
-
-      projects:
-        parsedData.projects ??
-        initialPortfolioData.projects ??
-        [],
-
-      education:
-        parsedData.education ??
-        initialPortfolioData.education ??
-        [],
-
-      skills:
-        parsedData.skills ??
-        initialPortfolioData.skills ??
-        {},
-
-      certificates:
-        parsedData.certificates ??
-        initialPortfolioData.certificates ??
-        [],
-
-      certifications:
-        parsedData.certifications ??
-        initialPortfolioData.certifications ??
-        [],
-
-      messages:
-        parsedData.messages ??
-        initialPortfolioData.messages ??
-        [],
-    };
+    return mergePortfolioData(
+      parsedData
+    );
   } catch (error) {
     console.error(
       "Failed to read local portfolio:",
@@ -114,14 +138,13 @@ function getLocalData() {
 function PortfolioProvider({
   children,
 }) {
-  const [portfolioData, setPortfolioData] =
-    useState(getLocalData);
+  const [
+    portfolioData,
+    setPortfolioData,
+  ] = useState(getLocalData);
 
   const [loading, setLoading] =
     useState(true);
-
-  const initialized =
-    useRef(false);
 
   const portfolioRef = doc(
     db,
@@ -130,24 +153,22 @@ function PortfolioProvider({
   );
 
   /*
-   * FIRST LOAD
-   *
-   * If Firestore is empty:
-   * upload the current browser's localStorage data.
-   *
-   * If Firestore already contains data:
-   * load Firestore data.
+   * Initial Firestore load
    */
   useEffect(() => {
     const initializePortfolio =
       async () => {
         try {
           const snapshot =
-            await getDoc(portfolioRef);
+            await getDoc(
+              portfolioRef
+            );
 
           if (snapshot.exists()) {
             const firebaseData =
-              snapshot.data();
+              mergePortfolioData(
+                snapshot.data()
+              );
 
             setPortfolioData(
               firebaseData
@@ -172,12 +193,17 @@ function PortfolioProvider({
               localData
             );
 
+            localStorage.setItem(
+              STORAGE_KEY,
+              JSON.stringify(
+                localData
+              )
+            );
+
             console.log(
-              "Existing portfolio uploaded to Firebase."
+              "Portfolio created in Firebase."
             );
           }
-
-          initialized.current = true;
         } catch (error) {
           console.error(
             "Firebase initialization error:",
@@ -192,11 +218,7 @@ function PortfolioProvider({
   }, []);
 
   /*
-   * REAL-TIME FIREBASE LISTENER
-   *
-   * Any update made from one browser
-   * will automatically appear in
-   * another browser.
+   * Real-time Firestore listener
    */
   useEffect(() => {
     const unsubscribe =
@@ -209,7 +231,9 @@ function PortfolioProvider({
           }
 
           const firebaseData =
-            snapshot.data();
+            mergePortfolioData(
+              snapshot.data()
+            );
 
           setPortfolioData(
             firebaseData
@@ -231,8 +255,9 @@ function PortfolioProvider({
         }
       );
 
-    return () =>
+    return () => {
       unsubscribe();
+    };
   }, []);
 
   /*
@@ -241,116 +266,141 @@ function PortfolioProvider({
   const savePortfolio =
     async (updatedData) => {
       try {
+        const cleanData =
+          mergePortfolioData(
+            updatedData
+          );
+
+        /*
+         * Update screen immediately
+         */
         setPortfolioData(
-          updatedData
+          cleanData
         );
 
+        /*
+         * Save locally
+         */
         localStorage.setItem(
           STORAGE_KEY,
           JSON.stringify(
-            updatedData
+            cleanData
           )
         );
 
+        /*
+         * Save permanently to Firestore
+         */
         await setDoc(
           portfolioRef,
-          updatedData
+          cleanData
         );
+
+        return true;
       } catch (error) {
         console.error(
           "Failed to save portfolio:",
           error
         );
+
+        /*
+         * Important:
+         * Send the error back to the
+         * admin page.
+         */
+        throw error;
       }
     };
 
   /*
    * Update Profile
+   *
+   * Resume link is also saved here.
    */
-  const updateProfile = (
-    updatedProfile
-  ) => {
-    const updatedData = {
-      ...portfolioData,
+  const updateProfile =
+    async (updatedProfile) => {
+      const updatedData = {
+        ...portfolioData,
 
-      profile: {
-        ...portfolioData.profile,
-        ...updatedProfile,
-      },
+        profile: {
+          ...(portfolioData.profile ||
+            {}),
+          ...updatedProfile,
+        },
+      };
+
+      await savePortfolio(
+        updatedData
+      );
+
+      return true;
     };
 
-    savePortfolio(updatedData);
-  };
+  /*
+   * Update Education
+   */
+  const setEducation =
+    async (education) => {
+      await savePortfolio({
+        ...portfolioData,
+        education,
+      });
+    };
 
   /*
-   * Education
+   * Update Skills
    */
-  const setEducation = (
-    education
-  ) => {
-    savePortfolio({
-      ...portfolioData,
-      education,
-    });
-  };
+  const setSkills =
+    async (skills) => {
+      await savePortfolio({
+        ...portfolioData,
+        skills,
+      });
+    };
 
   /*
-   * Skills
+   * Update Projects
    */
-  const setSkills = (skills) => {
-    savePortfolio({
-      ...portfolioData,
-      skills,
-    });
-  };
+  const setProjects =
+    async (projects) => {
+      await savePortfolio({
+        ...portfolioData,
+        projects,
+      });
+    };
 
   /*
-   * Projects
+   * Update Certificates
    */
-  const setProjects = (
-    projects
-  ) => {
-    savePortfolio({
-      ...portfolioData,
-      projects,
-    });
-  };
+  const setCertificates =
+    async (certificates) => {
+      await savePortfolio({
+        ...portfolioData,
+        certificates,
+      });
+    };
 
   /*
-   * Certificates
+   * Update Certifications
    */
-  const setCertificates = (
-    certificates
-  ) => {
-    savePortfolio({
-      ...portfolioData,
-      certificates,
-    });
-  };
+  const setCertifications =
+    async (certifications) => {
+      await savePortfolio({
+        ...portfolioData,
+        certifications,
+      });
+    };
 
   /*
-   * Certifications
+   * Update Messages
    */
-  const setCertifications = (
-    certifications
-  ) => {
-    savePortfolio({
-      ...portfolioData,
-      certifications,
-    });
-  };
-
-  /*
-   * Messages
-   */
-  const setMessages = (
-    messages
-  ) => {
-    savePortfolio({
-      ...portfolioData,
-      messages,
-    });
-  };
+  const setMessages =
+    async (messages) => {
+      await savePortfolio({
+        ...portfolioData,
+        messages,
+      });
+    };
 
   /*
    * Reset Portfolio
